@@ -128,6 +128,18 @@ function create(req, res, next) {
   orders.push(newOrder);
   res.status(201).send({ data: newOrder });
 }
+function destroy(req,res,next){
+    const {foundIndex, foundOrder} = res.locals;
+    if(foundOrder.status === "pending"){
+        orders.splice(foundIndex,1);
+        res.status(204).send()
+    }else{
+        next({
+            status: 400,
+            message:"An order cannot be deleted unless it is pending."
+        })
+    }
+}
 function list(req, res, next) {
   res.send({ data: orders });
 }
@@ -148,4 +160,5 @@ module.exports = {
     statusValidator,
     update,
   ],
+  destroy: [validateOrder, destroy]
 };
