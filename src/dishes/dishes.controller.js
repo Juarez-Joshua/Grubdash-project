@@ -37,6 +37,20 @@ function validateDataExists(req, res, next) {
     }
   }
 
+function validateDishExists(req,res,next){
+    const {dishId} = req.params;
+    const foundDish = dishes.find((dish) => dish.id === dishId);
+    if(foundDish){
+        res.locals.foundDish = foundDish;
+        next();
+    }else{
+        next({
+            status: 404,
+            message: `Dish with id: ${dishId}`
+        })
+    }
+}
+
 function list(req,res,next){
     res.send({data: dishes})
 }
@@ -53,8 +67,12 @@ function create(req,res,next){
     res.status(201).send({data:newDish})
 }
 
+function read(req,res,next){
+    res.send({data: res.locals.foundDish});
+}
 const fieldValidators = ['name', 'description', 'image_url', 'price',].map(validator)
 module.exports ={
     list,
-    create: [validateDataExists, ...fieldValidators, create]
+    create: [validateDataExists, ...fieldValidators, create],
+    read: [validateDishExists, read]
 }
