@@ -55,13 +55,13 @@ function validateDishExists(req, res, next) {
 
 function update(req, res, next) {
   const { id, name, description, image_url, price } = req.body.data;
-  if(id){
-      if(id != res.locals.foundDish.id){
-        next({
-            status: 400,
-            message:  `id: ${id} in data doesn't match in path`
-        })
-      }
+  if (id) {
+    if (id != res.locals.foundDish.id) {
+      next({
+        status: 400,
+        message: `id: ${id} in data doesn't match in path`,
+      });
+    }
   }
   const updatedDish = {
     ...res.locals.foundDish,
@@ -101,4 +101,5 @@ module.exports = {
   create: [validateDataExists, ...fieldValidators, create],
   read: [validateDishExists, read],
   update: [validateDishExists, validateDataExists, ...fieldValidators, update],
+  validateDataExists,
 };
